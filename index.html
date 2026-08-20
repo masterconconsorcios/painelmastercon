@@ -1949,9 +1949,24 @@ renderResumo();
 
   // abas do rodízio (na ordem). Pode trocar por ['resumo','geral','sup','cons','camp']
   const ROTA = (params.get('abas') || 'resumo,geral,camp').split(',');
-  // VELOCIDADE de leitura: pixels por segundo. Menor = mais devagar/suave.
-  // Ajuste pelo link: ?vel=25 (bem lento) ... ?vel=70 (mais rápido). Padrão 40.
-  const VEL = Math.max(12, +(params.get('vel') || 40));
+  // VELOCIDADE de leitura (pixels por segundo) — POR ABA. Menor = mais devagar/suave.
+  // O Resumo tem muito conteúdo, então rola mais devagar que as outras.
+  const VEL_PADRAO = {
+    resumo: 18,   // primeira página: bem devagar (mais coisa pra ler)
+    geral:  35,
+    sup:    35,
+    cons:   30,
+    camp:   28,   // campanhas têm bastante detalhe
+  };
+  // Dá pra sobrescrever tudo de uma vez pelo link: ?vel=25 força a mesma pra todas.
+  const VEL_GERAL = params.get('vel') ? Math.max(8, +params.get('vel')) : null;
+  // Ou ajustar só uma aba: ?vel_resumo=15  ?vel_camp=30 etc.
+  const velDaAba = id => {
+    const especifica = params.get('vel_'+id);
+    if(especifica) return Math.max(8, +especifica);
+    if(VEL_GERAL) return VEL_GERAL;
+    return VEL_PADRAO[id] || 35;
+  };
   // pausas (segundos) no topo e no fim de cada página, pra dar tempo de ler antes de rolar
   const PAUSA = Math.max(1, +(params.get('pausa') || 4));
 
@@ -1967,9 +1982,8 @@ renderResumo();
   };
   const espera = ms => new Promise(r=>setTimeout(r, ms));
 
-  // Rola do topo até o fim numa VELOCIDADE CONSTANTE (px/s).
-  // Páginas maiores levam mais tempo, mas o ritmo é sempre o mesmo e suave.
-  function rolarConstante(){
+  // Rola do topo até o fim numa VELOCIDADE CONSTANTE (px/s), específica da aba.
+  function rolarConstante(vel){
     return new Promise(resolve=>{
       let ultimo = performance.now();
       let pos = 0;                                  // posição precisa (sem arredondamento do browser)
@@ -1977,7 +1991,7 @@ renderResumo();
         const alvo = document.documentElement.scrollHeight - window.innerHeight;
         if(alvo <= 0){ resolve(); return; }         // página cabe na tela, nada a rolar
         const dt = Math.min(0.05, (now - ultimo)/1000); ultimo = now;  // limita dt (evita saltos)
-        pos += VEL*dt;                              // avança VEL pixels por segundo
+        pos += vel*dt;                              // avança "vel" pixels por segundo
         window.scrollTo(0, pos);
         if(pos < alvo - 1) requestAnimationFrame(passo);
         else { window.scrollTo(0, alvo); resolve(); }
@@ -1986,10 +2000,10 @@ renderResumo();
     });
   }
 
-  async function mostraPagina(){
+  async function mostraPagina(vel){
     window.scrollTo({top:0});
     await espera(PAUSA*1000);      // pausa no topo pra ler o começo
-    await rolarConstante();        // rola devagar até o fim
+    await rolarConstante(vel);     // rola devagar até o fim
     await espera(PAUSA*1000);      // pausa no fim pra ler o final
   }
 
@@ -1999,20 +2013,21 @@ renderResumo();
         // aba de campanhas: passa por CADA campanha ativa (relâmpago, semestral, anual)
         clicaAba('camp');
         await espera(500);
+        const vel = velDaAba('camp');
         const botoes = [...document.querySelectorAll('#campSwitch button')];
         if(botoes.length){
           for(const btn of botoes){
             btn.click();
             await espera(600);      // renderiza a campanha
-            await mostraPagina();
+            await mostraPagina(vel);
           }
         } else {
-          await mostraPagina();
+          await mostraPagina(vel);
         }
       } else {
         clicaAba(id);
         await espera(500);          // deixa renderizar
-        await mostraPagina();
+        await mostraPagina(velDaAba(id));
       }
     }
     ciclo();   // loop eterno
