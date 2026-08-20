@@ -1949,11 +1949,14 @@ renderResumo();
 
   // abas do rodízio (na ordem). Pode trocar por ['resumo','geral','sup','cons','camp']
   const ROTA = (params.get('abas') || 'resumo,geral,camp').split(',');
-  const SEGUNDOS = Math.max(8, +(params.get('seg') || 30));   // tempo por aba
+  // VELOCIDADE de leitura: pixels por segundo. Menor = mais devagar/suave.
+  // Ajuste pelo link: ?vel=25 (bem lento) ... ?vel=70 (mais rápido). Padrão 40.
+  const VEL = Math.max(12, +(params.get('vel') || 40));
+  // pausas (segundos) no topo e no fim de cada página, pra dar tempo de ler antes de rolar
+  const PAUSA = Math.max(1, +(params.get('pausa') || 4));
 
   document.documentElement.classList.add('modo-tv');
 
-  // esconde a barra de abas e filtros (ninguém interage na TV)
   const barraAbas = document.querySelector('.tabs') || document.querySelector('[role="tablist"]');
   if(barraAbas) barraAbas.style.display = 'none';
   const filtros = document.querySelector('.filters'); if(filtros) filtros.style.display='none';
@@ -1962,59 +1965,58 @@ renderResumo();
     const tab = document.querySelector(`.tab[data-p="${id}"]`);
     if(tab) tab.click();
   };
+  const espera = ms => new Promise(r=>setTimeout(r, ms));
 
-  // rola suave do topo até o fim ao longo de "dur" ms
-  function rolarDevagar(dur){
+  // Rola do topo até o fim numa VELOCIDADE CONSTANTE (px/s).
+  // Páginas maiores levam mais tempo, mas o ritmo é sempre o mesmo e suave.
+  function rolarConstante(){
     return new Promise(resolve=>{
-      const inicio = performance.now();
-      window.scrollTo({top:0, behavior:'auto'});
+      let ultimo = performance.now();
+      let pos = 0;                                  // posição precisa (sem arredondamento do browser)
       function passo(now){
-        const t = Math.min(1, (now-inicio)/dur);
         const alvo = document.documentElement.scrollHeight - window.innerHeight;
-        window.scrollTo(0, alvo * t);
-        if(t < 1) requestAnimationFrame(passo);
-        else resolve();
+        if(alvo <= 0){ resolve(); return; }         // página cabe na tela, nada a rolar
+        const dt = Math.min(0.05, (now - ultimo)/1000); ultimo = now;  // limita dt (evita saltos)
+        pos += VEL*dt;                              // avança VEL pixels por segundo
+        window.scrollTo(0, pos);
+        if(pos < alvo - 1) requestAnimationFrame(passo);
+        else { window.scrollTo(0, alvo); resolve(); }
       }
       requestAnimationFrame(passo);
     });
   }
 
-  async function mostraAba(id, dur){
-    clicaAba(id);
-    await new Promise(r=>setTimeout(r, 500));   // deixa renderizar
+  async function mostraPagina(){
     window.scrollTo({top:0});
-    await new Promise(r=>setTimeout(r, dur*0.12));   // pausa no topo
-    await rolarDevagar(dur*0.76);                     // rola até o fim
-    await new Promise(r=>setTimeout(r, dur*0.12));   // pausa no fim
+    await espera(PAUSA*1000);      // pausa no topo pra ler o começo
+    await rolarConstante();        // rola devagar até o fim
+    await espera(PAUSA*1000);      // pausa no fim pra ler o final
   }
 
   async function ciclo(){
     for(const id of ROTA){
       if(id === 'camp'){
-        // na aba de campanhas, passa por CADA campanha ativa (relâmpago, semestral, anual)
+        // aba de campanhas: passa por CADA campanha ativa (relâmpago, semestral, anual)
         clicaAba('camp');
-        await new Promise(r=>setTimeout(r, 400));
+        await espera(500);
         const botoes = [...document.querySelectorAll('#campSwitch button')];
         if(botoes.length){
           for(const btn of botoes){
             btn.click();
-            await new Promise(r=>setTimeout(r, 500));   // renderiza a campanha
-            window.scrollTo({top:0});
-            const dur = SEGUNDOS*1000;
-            await new Promise(r=>setTimeout(r, dur*0.12));
-            await rolarDevagar(dur*0.76);
-            await new Promise(r=>setTimeout(r, dur*0.12));
+            await espera(600);      // renderiza a campanha
+            await mostraPagina();
           }
         } else {
-          await mostraAba('camp', SEGUNDOS*1000);
+          await mostraPagina();
         }
       } else {
-        await mostraAba(id, SEGUNDOS*1000);
+        clicaAba(id);
+        await espera(500);          // deixa renderizar
+        await mostraPagina();
       }
     }
     ciclo();   // loop eterno
   }
-  // começa após um instante pra tudo carregar
   setTimeout(ciclo, 800);
 })();
 
