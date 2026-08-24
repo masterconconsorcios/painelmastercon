@@ -182,6 +182,7 @@ button.btn:hover{border-color:var(--energy);color:var(--energy)}
 
 /* ── Resumo do mês ── */
 .resumo-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:20px}
+.resumo-filtros{display:flex;gap:12px;flex-wrap:wrap}
 .resumo-head h2{font-size:18px;font-weight:700;letter-spacing:-.01em;color:var(--ink);text-transform:none}
 
 /* Supervisores — régua compacta */
@@ -204,10 +205,31 @@ button.btn:hover{border-color:var(--energy);color:var(--energy)}
 .sm-scale span.meta{color:var(--energy);font-weight:700}
 .sm-scale span.right{transform:translateX(-90%)}
 
+/* Supervisor clicável (abre o gráfico da equipe) */
+.sup-mini.clicavel{cursor:pointer;border-radius:8px;padding:11px 10px;margin:0 -10px;transition:background .15s ease}
+.sup-mini.clicavel:hover{background:var(--canvas)}
+.sup-mini.clicavel:focus-visible{outline:2px solid var(--energy);outline-offset:-2px}
+.sup-mini.clicavel.aberto{background:var(--canvas)}
+.sm-chevron{display:inline-block;font-size:15px;color:var(--muted);transition:transform .25s ease;transform:translateY(-1px)}
+.sup-mini.clicavel.aberto .sm-chevron{transform:translateY(-1px) rotate(180deg);color:var(--energy)}
+.sup-graf{padding:4px 0 14px;border-bottom:1px solid var(--silver);animation:supGrafIn .3s ease}
+.sup-graf[hidden]{display:none}
+.sup-graf-tit{font-size:12px;color:var(--muted);margin:0 0 4px;padding-left:2px}
+@keyframes supGrafIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
 /* Consultores — ranking */
 .rkrow{display:flex;align-items:center;gap:13px;padding:11px 4px;border-bottom:1px solid var(--silver)}
 .rkrow:last-child{border-bottom:none}
 .rkrow.zerado{opacity:.62}
+/* Consultor clicável (abre o gráfico individual) */
+.rkrow.clicavel{cursor:pointer;border-radius:8px;transition:background .15s ease}
+.rkrow.clicavel:hover{background:var(--canvas)}
+.rkrow.clicavel:focus-visible{outline:2px solid var(--energy);outline-offset:-2px}
+.rkrow.clicavel.aberto{background:var(--canvas)}
+.rk-chevron{font-size:14px;color:var(--muted);transition:transform .25s ease}
+.rkrow.clicavel.aberto .rk-chevron{transform:rotate(180deg);color:var(--energy)}
+.cons-graf{padding:4px 0 14px;border-bottom:1px solid var(--silver);animation:supGrafIn .3s ease}
+.cons-graf[hidden]{display:none}
 .rk-pos{width:26px;flex:none;text-align:center;font-size:14px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
 .rkrow.rk-top .rk-pos{color:var(--ink)}
 .rkrow.rk1 .rk-pos{color:var(--energy)}
@@ -246,12 +268,22 @@ button.btn:hover{border-color:var(--energy);color:var(--energy)}
 }
 .thermo .figure{font-size:14px;color:var(--muted)}
 .thermo .figure b{color:var(--ink);font-weight:700;font-size:16px}
-.track{position:relative;height:32px;background:var(--canvas);border:1px solid var(--silver);border-radius:6px;overflow:hidden}
-.fill{position:absolute;inset:0 auto 0 0;background:var(--energy);border-radius:5px 0 0 5px;transition:width .5s cubic-bezier(.22,1,.36,1)}
-.fill.t1{background:#d8b74a}
-.fill.t2{background:#5fa87f}
-.fill.t3{background:#5fa87f}
-.fill.t0{background:#d98a86}
+.track{position:relative;height:32px;background:var(--track);border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.08)}
+.fill{position:absolute;inset:0 auto 0 0;border-radius:7px 3px 3px 7px;
+  background:linear-gradient(180deg, #ec6169 0%, var(--energy) 55%, #c02f37 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.25), 0 0 8px rgba(224,59,67,.25);
+  transition:width .7s cubic-bezier(.22,1,.36,1)}
+.fill::after{content:"";position:absolute;inset:0;border-radius:inherit;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.14) 50%, transparent);
+  background-size:200% 100%;animation:brilho 3.2s ease-in-out infinite}
+@keyframes brilho{0%{background-position:180% 0}55%,100%{background-position:-80% 0}}
+.fill.t1{background:linear-gradient(180deg,#e6c968,#d8b74a,#bfa03b);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 8px rgba(216,183,74,.25)}
+.fill.t2,.fill.t3{background:linear-gradient(180deg,#74bd94,#5fa87f,#4d8c69);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 0 8px rgba(95,168,127,.25)}
+.fill.t0{background:linear-gradient(180deg,#e3a09b,#d98a86,#c37470);box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 0 8px rgba(217,138,134,.2)}
+[data-theme="dark"] .fill{background:linear-gradient(180deg,#ff7b82,#ff5a62,#e04049)}
+[data-theme="dark"] .fill.t1{background:linear-gradient(180deg,#f0d76a,#e0c15a,#c9a940)}
+[data-theme="dark"] .fill.t2,[data-theme="dark"] .fill.t3{background:linear-gradient(180deg,#8fd4aa,#79c99a,#5fae80)}
+[data-theme="dark"] .fill.t0{background:linear-gradient(180deg,#f0918a,#e0776f,#c95d56)}
 .mkrow{position:relative;height:34px;margin-bottom:2px}
 .mkrow-tall{height:56px}
 .mk{position:absolute;bottom:0;transform:translateX(-50%);text-align:center;line-height:1.15;white-space:nowrap}
@@ -285,14 +317,47 @@ text.vlab{font-size:10.5px;fill:var(--concrete);font-weight:600;font-family:'Mav
 .bar.prev{fill:#c6c6ca}
 .bar:hover{fill:var(--cherry)}
 .metaline{stroke:var(--concrete);stroke-width:1.5;stroke-dasharray:5 4;fill:none}
+/* Gráfico de evolução diária */
+.gd-line-c{stroke:var(--energy);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.gd-line-n{stroke:var(--concrete);stroke-width:1.6;stroke-dasharray:4 3;stroke-linejoin:round;stroke-linecap:round;opacity:.7}
+.gd-dot-c{fill:var(--energy);stroke:var(--surface);stroke-width:1.5}
+.gd-dot-c:hover{r:5}
+.gd-dot-n{fill:var(--concrete);stroke:var(--surface);stroke-width:1;opacity:.7}
+/* linhas de referência: Base (discreta), Meta (destaque), Super Meta (alvo) */
+.gd-ref{stroke-dasharray:6 4;stroke-width:1.5}
+.gd-ref.base{stroke:#d8b74a;opacity:.8}
+.gd-ref.meta{stroke:#5fa87f;opacity:.85}
+.gd-ref.super{stroke:#2f6b48;opacity:.95}
+.gd-ref-lab{font-size:9.5px;font-weight:800;letter-spacing:.03em;font-family:'Maven Pro',sans-serif}
+.gd-ref-lab.base{fill:#b8952f}
+.gd-ref-lab.meta{fill:#3f8a63}
+.gd-ref-lab.super{fill:#1f5237}
+.gd-lab-c{fill:var(--energy);font-size:10.5px;font-weight:700;font-family:'Maven Pro',sans-serif;font-variant-numeric:tabular-nums}
+.gd-lab-n{fill:var(--muted);font-size:9px;font-weight:600;font-family:'Maven Pro',sans-serif}
+.gd-leg{display:flex;gap:18px;justify-content:center;margin-top:6px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.gd-leg span{display:inline-flex;align-items:center;gap:6px}
+.gd-leg-c::before{content:"";width:14px;height:3px;border-radius:2px;background:var(--energy)}
+.gd-leg-n::before{content:"";width:14px;height:0;border-top:2px dashed var(--concrete);opacity:.7}
+[data-theme="dark"] .gd-bar{opacity:.22}
+[data-theme="dark"] .gd-ref.base{stroke:#e6c968;opacity:.75}
+[data-theme="dark"] .gd-ref.meta{stroke:#79c99a;opacity:.8}
+[data-theme="dark"] .gd-ref.super{stroke:#4d9c72;opacity:.9}
+[data-theme="dark"] .gd-ref-lab.base{fill:#e6c968}
+[data-theme="dark"] .gd-ref-lab.meta{fill:#79c99a}
+[data-theme="dark"] .gd-ref-lab.super{fill:#6bc294}
+[data-theme="dark"] .gd-line-n{stroke:var(--silver);opacity:.6}
+[data-theme="dark"] .gd-dot-n{fill:var(--silver);opacity:.7}
+[data-theme="dark"] .gd-leg-n::before{border-top-color:var(--silver)}
 
 /* ── Barras de composição ── */
 .mixrow{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--silver)}
 .mixrow:last-child{border-bottom:none}
 .mixrow .nm{font-size:13px;font-weight:600;width:72px;flex:none}
-.mixbar{flex:1;height:9px;background:var(--canvas);border-radius:5px;overflow:hidden}
-.mixbar i{display:block;height:100%;background:var(--energy);border-radius:5px}
-.mixbar i.alt{background:var(--concrete)}
+.mixbar{flex:1;height:10px;background:var(--track);border-radius:6px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.1)}
+.mixbar i{display:block;height:100%;border-radius:6px;background:linear-gradient(180deg,#ec6169,var(--energy),#c02f37);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.mixbar i.alt{background:linear-gradient(180deg,#565658,var(--concrete),#333);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+[data-theme="dark"] .mixbar i{background:linear-gradient(180deg,#ff7b82,#ff5a62,#e04049)}
+[data-theme="dark"] .mixbar i.alt{background:linear-gradient(180deg,#d8d9da,#c9cacb,#a8a9aa)}
 .mixrow .vl{font-size:12.5px;color:var(--muted);width:120px;text-align:right;flex:none}
 .mixrow .vl b{color:var(--ink);font-weight:700}
 
@@ -483,11 +548,15 @@ td.who .tm{font-size:11.5px;color:var(--muted);font-weight:400}
 .badge.k2{border-color:#9aa3a8;color:#5f676b;background:#f4f6f7}
 .badge.k3{border-color:var(--energy);color:var(--energy);background:#fdeced}
 .badge.k4{border-color:var(--cherry);background:var(--cherry);color:#fff}
-.trk{display:inline-block;width:88px;height:7px;background:var(--canvas);border-radius:4px;overflow:hidden;vertical-align:middle;margin-right:9px}
-.trk i{display:block;height:100%;background:var(--energy)}
-.trk i.fill-c2{background:#5fa87f}
-.trk i.fill-c1{background:#d8b74a}
-.trk i.fill-c0{background:#d98a86}
+.trk{display:inline-block;width:88px;height:8px;background:var(--track);border-radius:5px;overflow:hidden;vertical-align:middle;margin-right:9px;box-shadow:inset 0 1px 2px rgba(0,0,0,.1)}
+.trk i{display:block;height:100%;border-radius:5px;background:linear-gradient(180deg,#ec6169,var(--energy),#c02f37);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.trk i.fill-c2{background:linear-gradient(180deg,#74bd94,#5fa87f,#4d8c69)}
+.trk i.fill-c1{background:linear-gradient(180deg,#e6c968,#d8b74a,#bfa03b)}
+.trk i.fill-c0{background:linear-gradient(180deg,#e3a09b,#d98a86,#c37470)}
+[data-theme="dark"] .trk i{background:linear-gradient(180deg,#ff7b82,#ff5a62,#e04049)}
+[data-theme="dark"] .trk i.fill-c2{background:linear-gradient(180deg,#8fd4aa,#79c99a,#5fae80)}
+[data-theme="dark"] .trk i.fill-c1{background:linear-gradient(180deg,#f0d76a,#e0c15a,#c9a940)}
+[data-theme="dark"] .trk i.fill-c0{background:linear-gradient(180deg,#f0918a,#e0776f,#c95d56)}
 .premio-tag{font-size:11px;font-weight:600;color:var(--muted)}
 .premio-tag.ok{color:#2c6e4f;font-weight:700}
 .podgat{display:flex;flex-direction:column;gap:4px;margin-top:8px;align-items:center}
@@ -591,9 +660,19 @@ td.who .tm{font-size:11.5px;color:var(--muted);font-weight:400}
         <h2 style="margin:0">Resumo do mês</h2>
         <p class="h2sub" id="resumoMes" style="margin:2px 0 0">—</p>
       </div>
-      <div class="fgroup" id="resumoFiltroSup" style="min-width:200px">
-        <label class="flabel" for="rSup">Filtrar por supervisão</label>
-        <select id="rSup"><option value="">Toda a loja</option></select>
+      <div class="resumo-filtros" id="resumoFiltroSup">
+        <div class="fgroup" style="min-width:190px">
+          <label class="flabel" for="rSup">Filtrar por supervisão</label>
+          <select id="rSup"><option value="">Toda a loja</option></select>
+        </div>
+        <div class="fgroup" style="min-width:150px">
+          <label class="flabel" for="rSeg">Segmento</label>
+          <select id="rSeg">
+            <option value="">Todos</option>
+            <option value="A">Auto</option>
+            <option value="I">Imóvel</option>
+          </select>
+        </div>
       </div>
     </div>
 
@@ -606,9 +685,21 @@ td.who .tm{font-size:11.5px;color:var(--muted);font-weight:400}
     </div>
 
     <div class="card" style="margin-bottom:16px">
+      <h2 id="resumoDiaTit">Evolução de vendas no mês</h2>
+      <p class="h2sub" id="resumoDiaSub">Crédito vendido e cotas vendidas por dia.</p>
+      <div id="resumoDia"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
       <h2 id="resumoSupTit">Supervisores no mês</h2>
       <p class="h2sub" id="resumoSupSub">Realizado do mês contra Base, Meta e Super Meta mensais de cada equipe.</p>
       <div id="resumoSup"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <h2>Destaques do mês</h2>
+      <p class="h2sub">Os campeões de cada categoria no mês.</p>
+      <div class="awards" id="resumoDest"></div>
     </div>
 
     <div class="card">
@@ -709,7 +800,7 @@ td.who .tm{font-size:11.5px;color:var(--muted);font-weight:400}
 
     <div class="card" style="margin-bottom:16px" id="secDestaques">
       <h2>Destaques</h2>
-      <p class="h2sub">Um troféu por pessoa: quem leva um sai da disputa do seguinte, para espalhar o reconhecimento.</p>
+      <p class="h2sub">Os campeões de cada categoria na campanha.</p>
       <div class="awards" id="awards"></div>
     </div>
 
@@ -901,7 +992,7 @@ const nf1 = new Intl.NumberFormat('pt-BR',{minimumFractionDigits:1,maximumFracti
 function brl(v){ return 'R$ ' + nf0.format(Math.round(v||0)); }
 function curto(v){
   v = v||0; const a=Math.abs(v);
-  if(a>=1e6) return 'R$ '+nf1.format(v/1e6)+' mi';
+  if(a>=1e6) return 'R$ '+nf1.format(v/1e6)+' M';
   if(a>=1e3) return 'R$ '+nf0.format(v/1e3)+' mil';
   return 'R$ '+nf0.format(v);
 }
@@ -1059,6 +1150,179 @@ function barras(el, series, metaPorMes){
     ${g}<line class="axis" x1="${ml}" y1="${mt+ih}" x2="${W-mr}" y2="${mt+ih}"/>${b}${ml_}</svg>`;
 }
 
+/* ── Gráfico de evolução diária (crédito + nº de vendas) ─────────
+   Linha de crédito (R$) com área, + linha de contagem de vendas.
+   Mostra os dias do mês vigente; dias sem venda ficam em zero. */
+function graficoDiario(el, mes, alvoSups, metaLoja, alvoCons, alvoSeg){
+  // metaLoja pode ser um número (só a meta) ou um objeto {base, meta, sup}.
+  // Base e Meta sempre aparecem; a Super Meta só entra depois de bater a Meta.
+  const refs = (metaLoja && typeof metaLoja==='object')
+    ? {base:metaLoja.base||0, meta:metaLoja.meta||0, sup:metaLoja.sup||0}
+    : {base:0, meta:(metaLoja||0), sup:0};
+
+  // agrupa vendas do mês por dia
+  const porDia = {};
+  R.forEach(r=>{
+    if(r[M_MES]!==mes) return;
+    if(alvoSups && !alvoSups.includes(r[M_SUP])) return;
+    if(alvoCons && r[M_CON]!==alvoCons) return;   // filtro por consultor específico
+    if(alvoSeg && r[M_SEG]!==alvoSeg) return;     // filtro por segmento (A/I)
+    const dia = +r[M_DATA].slice(8,10);
+    const o = porDia[dia] || (porDia[dia]={cred:0, cotas:0});
+    o.cred += r[M_CRE]; o.cotas += 1;   // cada linha da planilha = 1 cota vendida
+  });
+
+  // até que dia mostrar: se é o mês vigente, vai até DD; senão, mês inteiro
+  const ehVigente = (mes===ULT);
+  const ateDia = ehVigente ? DD : DIAS_MES;
+  // monta a série com acumulados
+  let accCred=0, accCotas=0;
+  const dias = [];
+  for(let d=1; d<=ateDia; d++){
+    const cred = (porDia[d]?.cred)||0, n = (porDia[d]?.cotas)||0;
+    accCred += cred; accCotas += n;
+    dias.push({d, cred, n, accCred, accCotas});
+  }
+
+  const temVenda = dias.some(x=>x.n>0);
+  if(!temVenda){
+    el.innerHTML = '<div class="empty">Ainda sem vendas registradas neste mês.</div>';
+    return;
+  }
+
+  const W=680, H=286, ml=54, mr=50, mt=46, mb=34;
+  const iw=W-ml-mr, ih=H-mt-mb;
+  const n = dias.length;
+
+  // decide quais referências mostrar:
+  // Base e Meta sempre; Super Meta só quando o acumulado já bateu a Meta.
+  const totalAcc = dias.length ? dias[dias.length-1].accCred : 0;
+  const bateuMeta = refs.meta>0 && totalAcc >= refs.meta;
+  const mostraSup = bateuMeta && refs.sup>0;
+  // teto de referência que precisa caber no gráfico
+  const tetoRef = Math.max(refs.base, refs.meta, mostraSup?refs.sup:0);
+
+  // escala esquerda (crédito acumulado): sobe a linha aproximando o topo do valor real,
+  // mas garantindo que as linhas de referência visíveis caibam.
+  const maxAcc = Math.max(Math.max(...dias.map(x=>x.accCred))*1.06, tetoRef*1.04) || 1;
+  // escala direita (cotas acumuladas) — bem ACHATADA na base (só ~30% da altura),
+  // pra ficar afastada da linha de crédito e sobrar espaço no meio pros rótulos
+  const topoCot = Math.max(1, ...dias.map(x=>x.accCotas));
+  const maxCot = topoCot / 0.30;
+
+  const xAt = i => ml + (n===1 ? iw/2 : iw*i/(n-1));
+  const yAcc = v => mt + ih - (v/maxAcc)*ih;           // linha acumulada de crédito
+  const yCot = v => mt + ih - (v/maxCot)*ih;           // linha de cotas (achatada embaixo)
+
+  // grade horizontal + eixo esquerdo (crédito acumulado)
+  let grade='';
+  for(let i=0;i<=4;i++){
+    const v=maxAcc*i/4, yy=yAcc(v);
+    grade+=`<line class="gl" x1="${ml}" y1="${yy}" x2="${W-mr}" y2="${yy}"/>
+      <text class="tick" x="${ml-8}" y="${yy+3.5}" text-anchor="end">${i?curto(v).replace('R$ ',''):'0'}</text>`;
+  }
+  // eixo direito removido: os valores de cotas já aparecem rotulados na própria linha,
+  // então o eixo lateral (0 ... 182) seria redundante e polui o canto.
+  let eixoN='';
+
+  // rótulos de dia no eixo X — mostra TODOS os dias (1, 2, 3, ...)
+  let eixoX='';
+  dias.forEach((x,i)=>{
+    eixoX+=`<text class="tick" x="${xAt(i)}" y="${H-mb+16}" text-anchor="middle">${x.d}</text>`;
+  });
+
+  // linha acumulada de crédito (principal) + área
+  const ptsAcc = dias.map((x,i)=>`${xAt(i).toFixed(1)},${yAcc(x.accCred).toFixed(1)}`);
+  const areaAcc = `M ${ml},${mt+ih} L ${ptsAcc.join(' L ')} L ${xAt(n-1).toFixed(1)},${mt+ih} Z`;
+  const lineAcc = `M ${ptsAcc.join(' L ')}`;
+  // linha de cotas acumuladas (discreta, embaixo)
+  const ptsCot = dias.map((x,i)=>`${xAt(i).toFixed(1)},${yCot(x.accCotas).toFixed(1)}`);
+  const lineCot = `M ${ptsCot.join(' L ')}`;
+
+  // linhas de referência: Base e Meta sempre; Super Meta só depois de bater a Meta.
+  const refLinha = (valor, cls, rotulo)=>{
+    if(!(valor>0) || valor>maxAcc) return '';
+    const y = yAcc(valor);
+    // rótulo no lado ESQUERDO (onde o começo do mês está vazio), acima da linha
+    const lx = ml + 6;
+    return `<line class="gd-ref ${cls}" x1="${ml}" y1="${y.toFixed(1)}" x2="${W-mr}" y2="${y.toFixed(1)}"/>
+      <text class="gd-ref-lab ${cls}" x="${lx}" y="${(y-6).toFixed(1)}" text-anchor="start">${rotulo} ${curto(valor).replace('R$ ','')}</text>`;
+  };
+  let metaLine = '';
+  metaLine += refLinha(refs.base, 'base', 'Base');
+  metaLine += refLinha(refs.meta, 'meta', 'Meta');
+  if(mostraSup) metaLine += refLinha(refs.sup, 'super', 'Super Meta');
+
+  // pontos na linha acumulada de crédito
+  let dots='';
+  dias.forEach((x,i)=>{
+    dots+=`<circle class="gd-dot-c" cx="${xAt(i).toFixed(1)}" cy="${yAcc(x.accCred).toFixed(1)}" r="2.6">
+      <title>Dia ${x.d}: acumulado ${brl(x.accCred)} · ${x.accCotas} cotas no mês</title></circle>`;
+  });
+  // pontos discretos na linha de cotas (só nos dias marcados, pra não poluir)
+  // pontos discretos na linha de cotas (nos dias marcados)
+  // define quais dias recebem rótulo: a cada 2 dias + o último,
+  // mas pula o penúltimo marcado se ele ficar colado no último (evita sobreposição)
+  const marcados = [];
+  dias.forEach((x,i)=>{
+    if((x.d % 2 === 0) || (i === n-1)) marcados.push(i);
+  });
+  // se os dois últimos marcados estão a 1 dia de distância, remove o penúltimo
+  if(marcados.length>=2){
+    const ult=marcados[marcados.length-1], pen=marcados[marcados.length-2];
+    if(ult-pen<=1) marcados.splice(marcados.length-2,1);
+  }
+  const marcadoSet = new Set(marcados);
+
+  let dotsN='';
+  dias.forEach((x,i)=>{
+    if(!marcadoSet.has(i)) return;
+    dotsN+=`<circle class="gd-dot-n" cx="${xAt(i).toFixed(1)}" cy="${yCot(x.accCotas).toFixed(1)}" r="2.2"></circle>`;
+  });
+
+  // rótulos ACUMULADOS nos dias marcados.
+  // Crédito fica ACIMA da sua linha (vermelho); cotas ficam ABAIXO da linha de cotas
+  // (cinza), afastados do eixo dos dias pra não confundir.
+  let labels='';
+  dias.forEach((x,i)=>{
+    if(!marcadoSet.has(i) || x.accCred<=0) return;
+    const px = xAt(i);
+    const anchor = (i === n-1) ? 'end' : 'middle';
+    const dx = (i === n-1) ? 4 : 0;
+    // crédito acumulado, acima da linha de crédito
+    const yCred = yAcc(x.accCred);
+    labels += `<text class="gd-lab-c" x="${(px+dx).toFixed(1)}" y="${(yCred-8).toFixed(1)}" text-anchor="${anchor}">${curto(x.accCred).replace('R$ ','')}</text>`;
+    // cotas acumuladas, logo abaixo da linha de cotas
+    const yCotP = yCot(x.accCotas);
+    labels += `<text class="gd-lab-n" x="${(px+dx).toFixed(1)}" y="${(yCotP+15).toFixed(1)}" text-anchor="${anchor}">${x.accCotas}</text>`;
+  });
+
+  // total acumulado do mês pra mostrar no canto
+
+  el.innerHTML = `<svg class="chart gd" viewBox="0 0 ${W} ${H}" role="img" aria-label="Evolução acumulada de crédito, venda do dia e cotas">
+    <defs>
+      <linearGradient id="gdArea" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--energy)" stop-opacity="0.22"/>
+        <stop offset="100%" stop-color="var(--energy)" stop-opacity="0.02"/>
+      </linearGradient>
+    </defs>
+    ${grade}
+    <line class="axis" x1="${ml}" y1="${mt+ih}" x2="${W-mr}" y2="${mt+ih}"/>
+    ${metaLine}
+    <path d="${areaAcc}" fill="url(#gdArea)" stroke="none"/>
+    <path d="${lineCot}" class="gd-line-n" fill="none"/>
+    <path d="${lineAcc}" class="gd-line-c" fill="none"/>
+    ${dotsN}
+    ${dots}
+    ${labels}
+    ${eixoX}${eixoN}
+  </svg>
+  <div class="gd-leg">
+    <span class="gd-leg-c">Crédito acumulado (R$)</span>
+    <span class="gd-leg-n">Cotas acumuladas</span>
+  </div>`;
+}
+
 /* ── Linhas de composição ────────────────────────────────────── */
 function linhas(el, itens, total, alt){
   el.innerHTML = itens.map(it=>{
@@ -1190,7 +1454,12 @@ function renderSup(rows, ms, ag){
   document.getElementById('supSub').textContent =
     'A régua mostra Base, Meta e Super Meta de cada equipe, somadas apenas nos meses em que o time já existia.';
   document.getElementById('thermosSup').innerHTML =
-    [...ativos].sort((a,b)=>b.cred-a.cred).map(d=>thermo({
+    [...ativos].sort((a,b)=>{
+      // ordena por % de atingimento da meta (não pela venda bruta)
+      const pa = a.meta ? a.p : -1;   // equipes sem meta ativa vão pro fim
+      const pb = b.meta ? b.p : -1;
+      return pb - pa;
+    }).map(d=>thermo({
       titulo:`Equipe ${d.nome}`,
       tag: d.quadro && d.cons < d.quadro ? `${d.cons} de ${d.quadro} consultores` : (d.cons?`${d.cons} consultores`:''),
       real:d.cred, base:d.base, meta:d.meta, sup:d.sup2
@@ -1339,6 +1608,7 @@ const PRESETS = [
   {id:'ult',  lab:'Mês atual',        f:()=>[ULT]},
   {id:'t3',   lab:'Últimos 3 meses',  f:()=>MESES.slice(-3)},
   {id:'s1',   lab:'1º semestre',      f:()=>MESES.filter(m=>+m.slice(5,7)<=6)},
+  {id:'s2',   lab:'2º semestre',      f:()=>MESES.filter(m=>+m.slice(5,7)>=7)},
   {id:'ano',  lab:'Ano de 2026',      f:()=>[...MESES]},
 ];
 function montarControles(){
@@ -1469,7 +1739,10 @@ const ICO = {
   alvo:'<circle cx="16" cy="16" r="12"/><circle cx="16" cy="16" r="6.5"/><circle cx="16" cy="16" r="1.6" fill="currentColor" stroke="none"/>',
   camadas:'<path d="M16 4L4 10l12 6 12-6z"/><path d="M4 16l12 6 12-6"/><path d="M4 22l12 6 12-6"/>',
   chama:'<path d="M16 29c5.5 0 9-3.6 9-8.4 0-6-5-8.6-4-14.6-4 1.6-7 5.4-7 9 0 1.9.8 3 .8 3S13 17 12 15c-2 1.8-3.5 3.9-3.5 6.6C8.5 25.4 10.5 29 16 29z"/>',
-  selo:'<circle cx="16" cy="16" r="12"/><path d="M10.5 16.5l3.8 3.8 7.2-7.6"/>'
+  selo:'<circle cx="16" cy="16" r="12"/><path d="M10.5 16.5l3.8 3.8 7.2-7.6"/>',
+  carro:'<path d="M5 20v-4l3-7h16l3 7v4"/><path d="M3 20h26v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1H8v1a1 1 0 01-1 1H4a1 1 0 01-1-1z"/><circle cx="9" cy="19.5" r="1.6" fill="currentColor" stroke="none"/><circle cx="23" cy="19.5" r="1.6" fill="currentColor" stroke="none"/>',
+  casa:'<path d="M5 15L16 5l11 10"/><path d="M8 13v13h16V13"/><path d="M13 26v-7h6v7"/>',
+  moeda:'<circle cx="16" cy="16" r="12"/><path d="M16 9v14M12.5 12.5h5a2.5 2.5 0 010 5h-3a2.5 2.5 0 000 5h5.5"/>'
 };
 const ico = k => `<svg class="ic" viewBox="0 0 32 32" fill="none" stroke="currentColor"
   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[k]}</svg>`;
@@ -1674,11 +1947,11 @@ function renderCamp(){
        v:d=>`${d.mesesAcimaMeta} de ${decorridos.length} meses acima da Meta`},
     {ic:'selo',   lb:'Carteira limpa',ch:d=>d.cred,   ok:d=>d.txRet===1 && d.cred>0, v:d=>`${brl(d.cred)} sem um cancelamento`}
   ];
-  // um troféu por pessoa: quem já levou sai da disputa do seguinte
-  const jaPremiado = new Set(); const premios = [];
+  // cada categoria mostra o REAL vencedor (a mesma pessoa pode levar mais de um)
+  const premios = [];
   criterios.forEach(cr=>{
-    const alvos = lista.filter(d=>cr.ok(d) && !jaPremiado.has(d.cons)).sort((a,b)=>cr.ch(b)-cr.ch(a));
-    if(alvos.length){ jaPremiado.add(alvos[0].cons); premios.push({...cr, d:alvos[0]}); }
+    const alvos = lista.filter(d=>cr.ok(d)).sort((a,b)=>cr.ch(b)-cr.ch(a));
+    if(alvos.length){ premios.push({...cr, d:alvos[0]}); }
   });
   document.getElementById('awards').innerHTML = premios.map(p=>
     `<div class="award">${ico(p.ic)}
@@ -1751,7 +2024,7 @@ renderCamp();
 /* ══════════════════════════════════════════════════════════════
    RESUMO DO MÊS — mês vigente, filtro próprio por supervisão
    ══════════════════════════════════════════════════════════════ */
-const RES = { sup:'' };
+const RES = { sup:'', seg:'' };
 
 /* plantel de cada equipe: quem vendeu em algum momento sob aquele supervisor.
    Assim listamos também quem não produziu em julho. */
@@ -1769,12 +2042,16 @@ function renderResumo(){
   const mes = ULT;
   const alvoSups = RES.sup ? [RES.sup] : SUPS;
 
+  const nomeSeg = RES.seg==='A' ? 'auto' : RES.seg==='I' ? 'imóvel' : '';
   document.getElementById('resumoMes').innerHTML =
     `<b>${rotuloLongo(mes)}</b> · mês vigente${DD<DIAS_MES?` · ${DD} de ${DIAS_MES} dias`:''}` +
-    (RES.sup ? ` · equipe ${CAP(RES.sup)}` : ' · toda a loja');
+    (RES.sup ? ` · equipe ${CAP(RES.sup)}` : ' · toda a loja') +
+    (RES.seg ? ` · só ${nomeSeg}` : '');
 
   /* ── KPIs do mês ── */
-  const rowsMes = R.filter(r=> r[M_MES]===mes && (!RES.sup || r[M_SUP]===RES.sup));
+  const rowsMes = R.filter(r=> r[M_MES]===mes
+    && (!RES.sup || r[M_SUP]===RES.sup)
+    && (!RES.seg || r[M_SEG]===RES.seg));
   const a = agregar(rowsMes);
   const consAtivos = new Set(rowsMes.map(r=>r[M_CON])).size;
   const metaMesTotal = RES.sup
@@ -1810,6 +2087,16 @@ function renderResumo(){
              base:baseL, meta:metaL, sup:supL })
     + projecao([mes], a.cred, metaL);
 
+  /* ── Gráfico de evolução do mês (acumulado + venda do dia) ── */
+  document.getElementById('resumoDiaTit').textContent =
+    RES.sup ? `Evolução da equipe ${CAP(RES.sup)} no mês` : 'Evolução de vendas no mês';
+  document.getElementById('resumoDiaSub').textContent =
+    (RES.sup ? `Crédito e cotas acumulados rumo à meta, marcados a cada 2 dias · equipe ${CAP(RES.sup)}.`
+             : 'Crédito e cotas acumulados rumo à meta, marcados a cada 2 dias na loja inteira.')
+    + (RES.seg ? ` Somente ${nomeSeg}.` : '');
+  graficoDiario(document.getElementById('resumoDia'), mes, RES.sup ? [RES.sup] : null,
+    {base:baseL, meta:metaL, sup:supL}, null, RES.seg);
+
   /* ── Supervisores (réguas compactas) ── */
   document.getElementById('resumoSupTit').textContent =
     RES.sup ? `Equipe ${CAP(RES.sup)} no mês` : 'Supervisores no mês';
@@ -1824,7 +2111,12 @@ function renderResumo(){
     const quadro = QTD[sup]||0;
     const fk = fotoSupervisor(sup);
     return {sup, cred:x.cred, cons, quadro, base, meta, sup2, fk, x};
-  }).sort((a,b)=>b.cred-a.cred);
+  }).sort((a,b)=>{
+    // ordena por % de atingimento da meta (não pela venda bruta)
+    const pa = a.meta ? a.cred/a.meta : -1;   // sem meta ativa vai pro fim
+    const pb = b.meta ? b.cred/b.meta : -1;
+    return pb - pa;
+  });
   document.getElementById('resumoSup').innerHTML =
     supCards.map(s=>{
       const p = s.meta ? s.cred/s.meta : 0;
@@ -1835,11 +2127,13 @@ function renderResumo(){
       const prod = s.quadro
         ? `${s.cons} de ${s.quadro} produziram`
         : (s.cons?`${s.cons} produziram`:'sem vendas');
-      return `<div class="sup-mini">
+      const supKey = esc(s.sup);
+      return `<div class="sup-mini clicavel" data-supgraf="${supKey}" role="button" tabindex="0"
+                   aria-expanded="false" title="Clique para ver a evolução da equipe">
         <div class="sm-face">${avatar(s.fk||s.sup, 34)}</div>
         <div class="sm-body">
           <div class="sm-top">
-            <span class="sm-nome">${esc(CAP(s.sup))}</span>
+            <span class="sm-nome">${esc(CAP(s.sup))} <span class="sm-chevron">⌄</span></span>
             <span class="sm-fig">${s.meta?`<b>${curto(s.cred)}</b> de ${curto(s.meta)} · ${pct(p)}`:`<b>${curto(s.cred)}</b>`}
               <span class="sm-cons">${prod}</span></span>
           </div>
@@ -1855,8 +2149,46 @@ function renderResumo(){
             <span class="right" style="left:${ns}%">Super ${curto(s.sup2)}</span>
           </div>`:''}
         </div>
-      </div>`;
+      </div>
+      <div class="sup-graf" id="supgraf-${supKey}" hidden></div>`;
     }).join('') || '<div class="empty">Sem equipes no filtro.</div>';
+
+  // liga o clique de cada supervisor: expande/recolhe o gráfico da equipe dele.
+  // Vários podem ficar abertos ao mesmo tempo.
+  document.querySelectorAll('#resumoSup .sup-mini.clicavel').forEach(card=>{
+    const sup = card.getAttribute('data-supgraf');
+    const abre = ()=>{
+      const box = document.getElementById('supgraf-'+sup);
+      if(!box) return;
+      const vai = box.hasAttribute('hidden');
+      if(vai){
+        box.removeAttribute('hidden');
+        card.setAttribute('aria-expanded','true');
+        card.classList.add('aberto');
+        // desenha o gráfico da equipe (só na primeira vez que abre)
+        if(!box.dataset.pronto){
+          const titulo = document.createElement('p');
+          titulo.className = 'sup-graf-tit';
+          titulo.textContent = `Evolução da equipe ${CAP(sup)} no mês`;
+          const alvo = document.createElement('div');
+          box.appendChild(titulo); box.appendChild(alvo);
+          const refsEq = (ATIVOS[sup]?.has(mes))
+            ? {base:METAS[sup][0], meta:METAS[sup][1], sup:METAS[sup][2]}
+            : 0;
+          graficoDiario(alvo, mes, [sup], refsEq, null, RES.seg);
+          box.dataset.pronto = '1';
+        }
+      } else {
+        box.setAttribute('hidden','');
+        card.setAttribute('aria-expanded','false');
+        card.classList.remove('aberto');
+      }
+    };
+    card.addEventListener('click', abre);
+    card.addEventListener('keydown', e=>{
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); abre(); }
+    });
+  });
 
   /* ── Consultores (ranking numerado) ── */
   const nomes = new Set();
@@ -1877,6 +2209,37 @@ function renderResumo(){
   }).sort((a,b)=> b.cred-a.cred || a.nome.localeCompare(b.nome,'pt-BR'));
   dados.forEach((d,i)=> d.pos = i+1);
 
+  /* ── Destaques do mês (um troféu por pessoa) ── */
+  // agrega auto/imóvel por consultor (o array dados não separa)
+  const detCons = {};
+  rowsMes.forEach(r=>{
+    const o = detCons[r[M_CON]] || (detCons[r[M_CON]]={cons:r[M_CON], nome:CAP(r[M_CON]),
+      cred:0, segVal:0, n:0, imovel:0, auto:0});
+    o.cred+=r[M_CRE]; o.segVal+=r[M_SGV]; o.n+=1;
+    if(r[M_SEG]==='I') o.imovel+=r[M_CRE]; else o.auto+=r[M_CRE];
+  });
+  const listaDst = Object.values(detCons).map(o=>({...o, ticket: o.n? o.cred/o.n : 0}));
+  const criteriosDst = [
+    {ic:'coroa',  lb:'Máquina de Vendas', ch:d=>d.cred,   ok:d=>d.cred>0,   v:d=>brl(d.cred)},
+    {ic:'escudo', lb:'Rei do Seguro',     ch:d=>d.segVal, ok:d=>d.segVal>0, v:d=>brl(d.segVal)+' em seguro'},
+    {ic:'moeda',  lb:'Mão de Ouro',       ch:d=>d.ticket, ok:d=>d.n>=2,     v:d=>`${curto(d.ticket)} por venda · ${d.n} vendas`},
+    {ic:'camadas',lb:'Artilheiro',        ch:d=>d.n,      ok:d=>d.n>0,      v:d=>`${nf0.format(d.n)} ${d.n===1?'cota':'cotas'} vendidas`},
+    {ic:'carro',  lb:'Dono da Garagem',   ch:d=>d.auto,   ok:d=>d.auto>0,   v:d=>`${curto(d.auto)} em auto`},
+    {ic:'casa',   lb:'Rei do Tijolo',     ch:d=>d.imovel, ok:d=>d.imovel>0, v:d=>`${curto(d.imovel)} em imóvel`},
+  ];
+  // cada categoria mostra o REAL vencedor (a mesma pessoa pode levar mais de um)
+  const premiosDst = [];
+  criteriosDst.forEach(cr=>{
+    const alvos = listaDst.filter(d=>cr.ok(d)).sort((a,b)=>cr.ch(b)-cr.ch(a));
+    if(alvos.length){ premiosDst.push({...cr, d:alvos[0]}); }
+  });
+  document.getElementById('resumoDest').innerHTML = premiosDst.map(p=>
+    `<div class="award">${ico(p.ic)}
+      <div class="tx"><div class="lb">${p.lb}</div>
+        <p class="wn">${esc(p.d.nome)}</p>
+        <p class="vl">${p.v(p.d)}</p></div></div>`).join('')
+    || '<div class="empty">Sem destaques ainda neste mês.</div>';
+
   const produziram = dados.filter(d=>d.vendeu).length;
   document.getElementById('resumoConsTit').textContent =
     RES.sup ? `Ranking · ${CAP(RES.sup)}` : 'Ranking de consultores no mês';
@@ -1891,11 +2254,18 @@ function renderResumo(){
           d.degrau>=3?'<span class="dg lenda" title="Lenda">★</span>':''}</span>`
       : '';
     const medal = d.vendeu && d.pos<=3 ? ` rk-top rk${d.pos}` : '';
-    return `<div class="rkrow${d.vendeu?'':' zerado'}${medal}">
+    // só quem vendeu tem gráfico pra abrir
+    const cliOn = d.vendeu ? ' clicavel' : '';
+    const consKey = esc(d.cons);
+    const atrs = d.vendeu
+      ? ` data-consgraf="${consKey}" role="button" tabindex="0" aria-expanded="false" title="Clique para ver a evolução do consultor"`
+      : '';
+    const chev = d.vendeu ? ' <span class="rk-chevron">⌄</span>' : '';
+    return `<div class="rkrow${d.vendeu?'':' zerado'}${medal}${cliOn}"${atrs}>
       <div class="rk-pos">${d.pos}</div>
       ${avatar(d.cons, 40)}
       <div class="rk-id">
-        <div class="rk-nm">${esc(d.nome)}${sel}</div>
+        <div class="rk-nm">${esc(d.nome)}${sel}${chev}</div>
         <div class="rk-eq">${esc(d.equipe)}</div>
       </div>
       <div class="rk-metrics">
@@ -1913,15 +2283,53 @@ function renderResumo(){
           <div class="rk-v${d.seg?'':' mut'}">${d.seg?curto(d.seg):'—'}</div>
         </div>
       </div>
-    </div>`;
+    </div>
+    ${d.vendeu?`<div class="cons-graf" id="consgraf-${consKey}" hidden></div>`:''}`;
   }).join('') || '<div class="empty">Nenhum consultor nesta seleção.</div>';
+
+  // liga o clique de cada consultor: expande/recolhe o gráfico dele.
+  // Vários podem ficar abertos ao mesmo tempo.
+  document.querySelectorAll('#resumoCons .rkrow.clicavel').forEach(row=>{
+    const cons = row.getAttribute('data-consgraf');
+    const abre = ()=>{
+      const box = document.getElementById('consgraf-'+cons);
+      if(!box) return;
+      const vai = box.hasAttribute('hidden');
+      if(vai){
+        box.removeAttribute('hidden');
+        row.setAttribute('aria-expanded','true');
+        row.classList.add('aberto');
+        if(!box.dataset.pronto){
+          const titulo = document.createElement('p');
+          titulo.className = 'sup-graf-tit';
+          titulo.textContent = `Evolução de ${CAP(cons)} no mês`;
+          const alvo = document.createElement('div');
+          box.appendChild(titulo); box.appendChild(alvo);
+          // consultor não tem meta própria — passa 0 (o gráfico esconde a linha de meta)
+          graficoDiario(alvo, mes, null, 0, cons, RES.seg);
+          box.dataset.pronto = '1';
+        }
+      } else {
+        box.setAttribute('hidden','');
+        row.setAttribute('aria-expanded','false');
+        row.classList.remove('aberto');
+      }
+    };
+    row.addEventListener('click', abre);
+    row.addEventListener('keydown', e=>{
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); abre(); }
+    });
+  });
 }
 
-/* filtro de supervisão do resumo */
+/* filtros do resumo: supervisão e segmento */
 (function initResumo(){
   const sel = document.getElementById('rSup');
   SUPS.forEach(s=> sel.insertAdjacentHTML('beforeend', `<option value="${s}">${CAP(s)}</option>`));
   sel.onchange = ()=>{ RES.sup = sel.value; renderResumo(); };
+
+  const selSeg = document.getElementById('rSeg');
+  if(selSeg) selSeg.onchange = ()=>{ RES.seg = selSeg.value; renderResumo(); };
 })();
 
 /* a aba resumo tem período próprio (mês vigente): esconde os filtros globais */
