@@ -978,7 +978,7 @@ const SUPS  = [...new Set(R.map(r=>r[M_SUP]))].sort();
 const NOME_MES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
 const rotulo = m => NOME_MES[+m.slice(5,7)-1] + '/' + m.slice(2,4);
 const rotuloLongo = m => ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][+m.slice(5,7)-1] + ' de ' + m.slice(0,4);
-const CAP = s => s.split(' ').map(w=>w.length>2?w[0]+w.slice(1).toLowerCase():w).join(' ');
+const CAP = s => s==='VALESIA' ? 'Valesia e Maurício' : s.split(' ').map(w=>w.length>2?w[0]+w.slice(1).toLowerCase():w).join(' ');
 
 /* Meses em que cada equipe esteve ativa — evita cobrar meta de time que ainda não existia */
 const ATIVOS = {};
@@ -1544,7 +1544,7 @@ function renderCons(rows, ms){
     {k:'cotasA', t:'Cotas auto', tp:'int'},
   ];
   tabela(document.getElementById('tblCons'), cols, dados, S.ordCons, 'ordCons', d=>
-    d.nEq>1 ? '<span class="tag-lite">mudou de equipe</span>' : '', true);
+    '', true);
 }
 function mediana(v){ const s=[...v].sort((a,b)=>a-b), m=s.length>>1;
   return s.length%2 ? s[m] : (s[m-1]+s[m])/2; }
