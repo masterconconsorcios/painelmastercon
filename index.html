@@ -953,6 +953,7 @@ function seloDestino(idCampanha, pos){
 const R = DADOS.records;                 // [mes,sup,cons,cred,flex,segVal,ret,canc,seg,temSeg,cotas]
 const M_MES=0,M_SUP=1,M_CON=2,M_CRE=3,M_FLX=4,M_SGV=5,M_RET=6,M_CAN=7,M_SEG=8,M_TSG=9,M_COT=10,M_DATA=11;
 const METAS = DADOS.metasSup, QTD = DADOS.qtdConsultores;
+const MT = s => METAS[s] || [0,0,0];   // supervisor sem meta cadastrada = sem régua
 const [MC_B,MC_M,MC_S] = DADOS.metaConsultor;
 /* Largura da barra do consultor: proporcional ao crédito real.
    0 → super meta (MC_S, o foco) ocupa 0–75% da barra;
@@ -2060,7 +2061,7 @@ function renderResumo(){
   const a = agregar(rowsMes);
   const consAtivos = new Set(rowsMes.map(r=>r[M_CON])).size;
   const metaMesTotal = RES.sup
-    ? (ATIVOS[RES.sup]?.has(mes) ? METAS[RES.sup][1] : 0)
+    ? (ATIVOS[RES.sup]?.has(mes) ? MT(RES.sup)[1] : 0)
     : DADOS.metaLoja[1];
   document.getElementById('kpisResumo').innerHTML =
     kpi('Crédito no mês', curto(a.cred),
@@ -2075,9 +2076,9 @@ function renderResumo(){
   let baseL, metaL, supL;
   if(RES.sup){
     // filtro por equipe: usa a meta do supervisor
-    baseL = mAtivo(RES.sup)?METAS[RES.sup][0]:0;
-    metaL = mAtivo(RES.sup)?METAS[RES.sup][1]:0;
-    supL  = mAtivo(RES.sup)?METAS[RES.sup][2]:0;
+    baseL = mAtivo(RES.sup)?MT(RES.sup)[0]:0;
+    metaL = mAtivo(RES.sup)?MT(RES.sup)[1]:0;
+    supL  = mAtivo(RES.sup)?MT(RES.sup)[2]:0;
   } else {
     // loja inteira: usa a meta oficial da loja (não a soma das ativas)
     [baseL, metaL, supL] = DADOS.metaLoja;
@@ -2111,7 +2112,7 @@ function renderResumo(){
     const rs = rowsMes.filter(r=>r[M_SUP]===sup);
     const x = agregar(rs);
     const ativo = ATIVOS[sup]?.has(mes);
-    const base = ativo? METAS[sup][0]:0, meta = ativo? METAS[sup][1]:0, sup2 = ativo? METAS[sup][2]:0;
+    const base = ativo? MT(sup)[0]:0, meta = ativo? MT(sup)[1]:0, sup2 = ativo? MT(sup)[2]:0;
     const cons = new Set(rs.map(r=>r[M_CON])).size;
     const quadro = QTD[sup]||0;
     const fk = fotoSupervisor(sup);
@@ -2178,7 +2179,7 @@ function renderResumo(){
           const alvo = document.createElement('div');
           box.appendChild(titulo); box.appendChild(alvo);
           const refsEq = (ATIVOS[sup]?.has(mes))
-            ? {base:METAS[sup][0], meta:METAS[sup][1], sup:METAS[sup][2]}
+            ? {base:MT(sup)[0], meta:MT(sup)[1], sup:MT(sup)[2]}
             : 0;
           graficoDiario(alvo, mes, [sup], refsEq, null, RES.seg);
           box.dataset.pronto = '1';
